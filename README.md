@@ -22,10 +22,10 @@
 - Choose compression when saving as PNG
 - Choose quality when saving as JPEG
 
-##v0.0.2 Improvements:
+## v0.0.2 Improvements:
 
 - Optimized generation time
 
-##Planned Improvements:
+## Planned Improvements:
 
 - Show last saved image index to make it easier to see which number the 'Start From' field should have when generating in batches
