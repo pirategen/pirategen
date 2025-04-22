@@ -30,3 +30,8 @@
 ## Planned Improvements:
 
 - Show last saved image index to make it easier to see which number the 'Start From' field should have when generating in batches
+
+
+
+<img width="648" alt="Screenshot 2025-04-22 at 4 34 38 PM" src="https://github.com/user-attachments/assets/4052632b-67f2-4ef9-8394-b47239f28501" />
+
