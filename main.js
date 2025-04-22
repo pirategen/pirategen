@@ -193,7 +193,7 @@ const app = {
     } else {
         // Add a spacer div with the same width as the checkbox for alignment
         const spacer = document.createElement('div');
-        spacer.style.width = '14px';
+        spacer.style.width = '30px';
         spacer.style.height = '14px';
         spacer.style.margin = '6px';
         spacer.style.border = '1px';

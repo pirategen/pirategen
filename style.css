@@ -3,8 +3,8 @@ body {
   font-family: 'Adobe Clean', Arial, sans-serif;
   margin: 0;
   padding: 0;
-  color: #ffffff;
-  background-color: #323232;
+  color: var(--uxp-host-text-color, #000000);
+  background-color: var(--uxp-host-background-color, #e6e6e6);
   font-size: 13px;
   overflow: scroll;
 }
@@ -16,7 +16,7 @@ body, html {
 
 .container {
   min-height: 100%;
-  height: auto; /* Allow container to expand with content */
+  height: auto;
   overflow: auto;
 }
 
@@ -25,11 +25,9 @@ body, html {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
-  background-color: #1a1a1a;
-  border-radius: 5px;
+  border-radius: 0;
   padding: 10px;
-  border: 1px solid #444;
+  border-bottom: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.3));
 }
 
 .header h1 {
@@ -37,6 +35,7 @@ body, html {
   font-size: 24px;
   font-weight: 500;
   letter-spacing: 1px;
+  color: var(--uxp-host-text-color, #000000);
 }
 
 /* Content Area */
@@ -45,53 +44,50 @@ body, html {
   display: flex;
   flex-direction: column;
   position: relative;
-  overflow: auto; /* Change from 'hidden' to 'auto' */
+  overflow: auto;
   margin-bottom: 15px;
   gap: 15px;
-  min-height: 0; /* Change from fixed 1000px to allow proper sizing */
+  min-height: 0;
 }
 
 /* Section Styling */
 .section {
-  border-radius: 5px;
   overflow: hidden;
-  background-color: #1a1a1a;
   display: flex;
   flex-direction: column;
-  border: 1px solid #444;
-  min-height: 0; /* This is important for proper flex sizing */
+  border-bottom: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.3));
+  min-height: 0;
 }
 
 .collection-info-section {
-  flex: 0 0 auto; /* Don't grow, don't shrink, auto height */
+  flex: 0 0 auto;
   margin-bottom: 10px;
 }
 
 .collection-info-section .section-content {
   padding: 8px 15px;
-  max-height: 160px; /* Limit the height */
+  max-height: 160px;
 }
 
 .layer-groups-section {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: visible; /* Change from 'hidden' to 'visible' */
-  min-height: 200px; /* Provide a reasonable minimum but not too large */
+  overflow: visible;
+  min-height: 200px;
 }
 
 .section-header {
   width: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding: 12px 15px;
-  background-color: #1a1a1a;
-  color: white;
+  color: var(--uxp-host-text-color, #000000);
   font-size: 14px;
   font-weight: 500;
-  text-align: center;
-  border-bottom: 1px solid #444;
+  text-align: left;
+  border-bottom: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.2));
 }
 
 .section-title {
@@ -100,12 +96,10 @@ body, html {
 
 .section-content {
   padding: 10px 15px;
-  background-color: #2a2a2a;
   overflow-y: auto;
   flex: 1;
-  border-top: 1px solid #444;
   min-height: 0;
-  max-height: none; /* Remove any max-height constraints */
+  max-height: none;
 }
 
 .collection-text {
@@ -113,7 +107,7 @@ body, html {
 }
 
 .info-text {
-  color: #aaa;
+  color: var(--uxp-host-text-secondary-color, rgba(128, 128, 128, 0.9));
   font-size: 11px;
   margin: 0 0 10px 0;
   font-style: italic;
@@ -130,25 +124,23 @@ body, html {
 
 /* Form Styles */
 .form-group {
-  margin-bottom: 0px; /* Reduce space between form elements */
+  margin-bottom: 0px;
 }
 
 .form-group input[type="text"] {
-  height: 28px; /* Shorter height for input */
-  padding: 4px 8px;
+  height: 24px;
+  padding: 2px 6px;
 }
 
 .form-group textarea {
-  min-height: 40px; /* Shorter height for textarea */
-  padding: 4px 8px;
+  min-height: 40px;
+  padding: 2px 6px;
 }
 
 /* Footer Area */
 .footer {
-  background-color: #1a1a1a;
-  border-radius: 5px;
   padding: 15px;
-  border: 1px solid #444;
+  border-top: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.3));
   margin-bottom: 10px;
 }
 
@@ -187,32 +179,30 @@ label {
   white-space: nowrap;
   width: 100px;
   margin-right: 10px;
+  color: var(--uxp-host-text-color, #000000);
 }
 
 input[type="number"] {
-  width: 60px;
-  background-color: #3a3a3a;
-  border: 1px solid #555;
-  padding: 5px 8px;
-  color: white;
-  border-radius: 3px;
+  width: 50px;
+  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
+  padding: 2px 4px;
+  color: var(--uxp-host-text-color, #000000);
   text-align: right;
 }
 
-input[type="text"] {
+input[type="text"], textarea {
   flex: 1;
-  background-color: #3a3a3a;
-  border: 1px solid #555;
-  padding: 5px 8px;
-  color: white;
-  border-radius: 3px;
+  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
+  padding: 4px 6px;
+  color: var(--uxp-host-text-color, #000000);
 }
 
 /* Button Styles */
 button {
   border: none;
-  padding: 8px 15px;
-  border-radius: 3px;
+  padding: 6px 12px;
   font-size: 12px;
   cursor: pointer;
   font-weight: 500;
@@ -221,22 +211,27 @@ button {
 
 #browse-btn {
   margin-left: 8px;
-  background-color: #444;
-  color: #fff;
+  background-color: var(--uxp-host-background-color-tertiary, rgba(128, 128, 128, 0.2));
+  color: var(--uxp-host-text-color, #000000);
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
 }
 
 .primary-btn {
   background-color: #4a90e2;
   color: white;
-  padding: 8px 15px;
+  padding: 6px 12px;
   width: auto;
+  margin-left: 0px;
+  margin-top: 10px;
 }
 
 .primary-btn:disabled {
-  background-color: #777 !important; /* Grey background for disabled primary button */
-  color: #ddd;
+  background-color: var(--uxp-host-background-color-tertiary, rgba(128, 128, 128, 0.5)) !important;
+  color: var(--uxp-host-text-color-disabled, rgba(255, 255, 255, 0.7));
   opacity: 0.5;
   cursor: not-allowed;
+  margin-left: 0px;
+  margin-top: 10px;
 }
 
 button:hover {
@@ -246,8 +241,8 @@ button:hover {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: #777 !important;
-  color: #ddd;
+  background-color: var(--uxp-host-background-color-tertiary, rgba(128, 128, 128, 0.5)) !important;
+  color: var(--uxp-host-text-color-disabled, rgba(255, 255, 255, 0.7));
 }
 
 #layer-tree {
@@ -264,10 +259,9 @@ button:disabled {
 .layer-header {
   display: flex;
   align-items: center;
-  background-color: #333;
-  padding: 6px 8px;
-  border-radius: 3px;
-  border: 1px solid #555;
+  background-color: var(--uxp-host-background-color-secondary, rgba(128, 128, 128, 0.15));
+  padding: 4px 6px;
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.25));
 }
 
 .toggle-icon {
@@ -275,27 +269,12 @@ button:disabled {
   width: 12px;
   text-align: center;
   font-size: 10px;
-  color: #aaa;
+  color: var(--uxp-host-text-secondary-color, rgba(128, 128, 128, 0.9));
 }
 
+/* Use Photoshop's own checkbox styling */
 .layer-header input[type="checkbox"] {
   margin-right: 6px;
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  background: #444;
-  border: 1px solid #666;
-  border-radius: 3px;
-  position: relative;
-}
-
-.layer-header input[type="checkbox"]:checked::after {
-  content: "✓";
-  font-size: 11px;
-  position: absolute;
-  top: -1px;
-  left: 2px;
-  color: white;
 }
 
 .layer-name {
@@ -305,7 +284,8 @@ button:disabled {
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-right: 10px;
-  min-width: 0; /* Important for text truncation to work properly */
+  min-width: 0;
+  color: var(--uxp-host-text-color, #000000);
 }
 
 .rarity-container {
@@ -313,52 +293,51 @@ button:disabled {
   align-items: center;
   white-space: nowrap;
   flex-shrink: 0;
-  min-width: 80px; /* Set a minimum width */
-  width: 110px; /* Fixed width for consistent UI */
+  min-width: 80px;
+  width: 110px;
 }
 
 .rarity-sum {
   font-size: 11px;
-  color: #aaa;
+  color: var(--uxp-host-text-secondary-color, rgba(128, 128, 128, 0.9));
 }
 
 .rarity-label {
   margin-right: 5px;
   white-space: nowrap;
-  background: transparent; /* Ensure no background */
+  background: transparent;
+  color: var(--uxp-host-text-color, #000000);
 }
 
 .layer-children {
   margin-left: 18px;
   padding-top: 3px;
-  max-width: 100%; /* Change this from calc(100% - 18px) */
-  width: calc(100% - 18px); /* Add this instead */
-  overflow: hidden; /* Ensure no overflow */
+  max-width: 100%;
+  width: calc(100% - 18px);
+  overflow: hidden;
 }
 
 .layer-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 8px;
-  background-color: #333;
+  padding: 4px 6px;
+  background-color: var(--uxp-host-background-color-secondary, rgba(128, 128, 128, 0.15));
   margin-bottom: 3px;
-  border-radius: 3px;
-  border: 1px solid #555;
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.25));
   box-sizing: border-box;
   width: 100%;
-  min-width: 0; /* Add this to help with flexbox sizing */
+  min-width: 0;
   overflow: hidden;
 }
 
 .rarity-input {
-  width: 55px;
+  width: 45px;
   text-align: right;
-  border: 1px solid #555;
-  background-color: #3a3a3a;
-  color: white;
-  padding: 3px 5px;
-  border-radius: 3px;
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
+  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
+  color: var(--uxp-host-text-color, #000000);
+  padding: 2px 4px;
 }
 
 .save-options {
@@ -370,9 +349,9 @@ button:disabled {
 }
 
 .format-row, .number-input-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 #png-options, #jpeg-options {
@@ -381,13 +360,12 @@ button:disabled {
 }
 
 #png-compression, #jpeg-quality {
-  width: 60px;
+  width: 50px;
   text-align: center;
-  background-color: #3a3a3a;
-  border: 1px solid #555;
-  padding: 5px 8px;
-  color: white;
-  border-radius: 3px;
+  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
+  padding: 2px 4px;
+  color: var(--uxp-host-text-color, #000000);
 }
 
 .metadata-option {
@@ -396,14 +374,9 @@ button:disabled {
   margin-left: 20px;
 }
 
+/* Use Photoshop's own checkbox styling */
 .metadata-option input[type="checkbox"] {
   margin-right: 5px;
-  -webkit-appearance: checkbox;
-  width: 14px;
-  height: 14px;
-  background: #444;
-  border: 1px solid #666;
-  border-radius: 3px;
 }
 
 .metadata-option label {
@@ -419,19 +392,18 @@ button:disabled {
 }
 
 .start-index input[type="number"] {
-  width: 60px;
-  background-color: #3a3a3a;
-  border: 1px solid #555;
-  padding: 5px 8px;
-  color: white;
-  border-radius: 3px;
+  width: 50px;
+  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
+  padding: 2px 4px;
+  color: var(--uxp-host-text-color, #000000);
   text-align: right;
 }
 
 .help-text {
   margin-top: 5px;
   font-size: 11px;
-  color: #aaa;
+  color: var(--uxp-host-text-secondary-color, rgba(128, 128, 128, 0.9));
   line-height: 1.4;
   text-align: left;
   max-width: 340px;
@@ -445,9 +417,7 @@ button:disabled {
 .status {
   padding: 10px;
   font-size: 12px;
-  border-radius: 3px;
-  background-color: #2a2a2a;
-  border: 1px solid #444;
+  border-top: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.3));
 }
 
 .error {
@@ -464,6 +434,14 @@ button:disabled {
 
 .loading {
   padding: 10px;
-  color: #aaa;
+  color: var(--uxp-host-text-secondary-color, rgba(128, 128, 128, 0.9));
   font-style: italic;
+}
+
+/* Dropdown styling */
+select {
+  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
+  padding: 2px 4px;
+  color: var(--uxp-host-text-color, #000000);
 }
