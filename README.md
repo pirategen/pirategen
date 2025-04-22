@@ -1,4 +1,4 @@
-## pirate gen v0.0.2 installation
+## pirate gen v0.0.1 installation
 
 - You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the ccx file and open it.
 
@@ -22,7 +22,7 @@
 - Choose compression when saving as PNG
 - Choose quality when saving as JPEG
 
-## v0.0.2 Improvements:
+## Improvements:
 
 - Optimized generation time
 
