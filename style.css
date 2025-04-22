@@ -1,0 +1,469 @@
+/* Base Styles */
+body {
+  font-family: 'Adobe Clean', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #ffffff;
+  background-color: #323232;
+  font-size: 13px;
+  overflow: scroll;
+}
+
+body, html {
+  height: 100%;
+  overflow: auto;
+}
+
+.container {
+  min-height: 100%;
+  height: auto; /* Allow container to expand with content */
+  overflow: auto;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  background-color: #1a1a1a;
+  border-radius: 5px;
+  padding: 10px;
+  border: 1px solid #444;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+/* Content Area */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: auto; /* Change from 'hidden' to 'auto' */
+  margin-bottom: 15px;
+  gap: 15px;
+  min-height: 0; /* Change from fixed 1000px to allow proper sizing */
+}
+
+/* Section Styling */
+.section {
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #444;
+  min-height: 0; /* This is important for proper flex sizing */
+}
+
+.collection-info-section {
+  flex: 0 0 auto; /* Don't grow, don't shrink, auto height */
+  margin-bottom: 10px;
+}
+
+.collection-info-section .section-content {
+  padding: 8px 15px;
+  max-height: 160px; /* Limit the height */
+}
+
+.layer-groups-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* Change from 'hidden' to 'visible' */
+  min-height: 200px; /* Provide a reasonable minimum but not too large */
+}
+
+.section-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #1a1a1a;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  border-bottom: 1px solid #444;
+}
+
+.section-title {
+  letter-spacing: 0.5px;
+}
+
+.section-content {
+  padding: 10px 15px;
+  background-color: #2a2a2a;
+  overflow-y: auto;
+  flex: 1;
+  border-top: 1px solid #444;
+  min-height: 0;
+  max-height: none; /* Remove any max-height constraints */
+}
+
+.collection-text {
+  vertical-align: middle;
+}
+
+.info-text {
+  color: #aaa;
+  font-size: 11px;
+  margin: 0 0 10px 0;
+  font-style: italic;
+}
+
+.collection-spacing {
+  min-width: 25px;
+  display: inline-block;
+}
+
+.collection-column {
+  display: inline-block;
+}
+
+/* Form Styles */
+.form-group {
+  margin-bottom: 0px; /* Reduce space between form elements */
+}
+
+.form-group input[type="text"] {
+  height: 28px; /* Shorter height for input */
+  padding: 4px 8px;
+}
+
+.form-group textarea {
+  min-height: 40px; /* Shorter height for textarea */
+  padding: 4px 8px;
+}
+
+/* Footer Area */
+.footer {
+  background-color: #1a1a1a;
+  border-radius: 5px;
+  padding: 15px;
+  border: 1px solid #444;
+  margin-bottom: 10px;
+}
+
+.output-location {
+  display: flex;
+  align-items: center;
+}
+
+.generation-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.nft-count-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.nft-count {
+  display: flex;
+  align-items: center;
+}
+
+.path-selector {
+  flex: 1;
+  display: flex;
+}
+
+/* Controls Styling */
+label {
+  font-size: 13px;
+  white-space: nowrap;
+  width: 100px;
+  margin-right: 10px;
+}
+
+input[type="number"] {
+  width: 60px;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  padding: 5px 8px;
+  color: white;
+  border-radius: 3px;
+  text-align: right;
+}
+
+input[type="text"] {
+  flex: 1;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  padding: 5px 8px;
+  color: white;
+  border-radius: 3px;
+}
+
+/* Button Styles */
+button {
+  border: none;
+  padding: 8px 15px;
+  border-radius: 3px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+#browse-btn {
+  margin-left: 8px;
+  background-color: #444;
+  color: #fff;
+}
+
+.primary-btn {
+  background-color: #4a90e2;
+  color: white;
+  padding: 8px 15px;
+  width: auto;
+}
+
+.primary-btn:disabled {
+  background-color: #777 !important; /* Grey background for disabled primary button */
+  color: #ddd;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #777 !important;
+  color: #ddd;
+}
+
+#layer-tree {
+  overflow: visible;
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+
+.layer-group {
+  margin-bottom: 3px;
+}
+
+.layer-header {
+  display: flex;
+  align-items: center;
+  background-color: #333;
+  padding: 6px 8px;
+  border-radius: 3px;
+  border: 1px solid #555;
+}
+
+.toggle-icon {
+  margin-right: 6px;
+  width: 12px;
+  text-align: center;
+  font-size: 10px;
+  color: #aaa;
+}
+
+.layer-header input[type="checkbox"] {
+  margin-right: 6px;
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #444;
+  border: 1px solid #666;
+  border-radius: 3px;
+  position: relative;
+}
+
+.layer-header input[type="checkbox"]:checked::after {
+  content: "✓";
+  font-size: 11px;
+  position: absolute;
+  top: -1px;
+  left: 2px;
+  color: white;
+}
+
+.layer-name {
+  flex: 1;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 10px;
+  min-width: 0; /* Important for text truncation to work properly */
+}
+
+.rarity-container {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 80px; /* Set a minimum width */
+  width: 110px; /* Fixed width for consistent UI */
+}
+
+.rarity-sum {
+  font-size: 11px;
+  color: #aaa;
+}
+
+.rarity-label {
+  margin-right: 5px;
+  white-space: nowrap;
+  background: transparent; /* Ensure no background */
+}
+
+.layer-children {
+  margin-left: 18px;
+  padding-top: 3px;
+  max-width: 100%; /* Change this from calc(100% - 18px) */
+  width: calc(100% - 18px); /* Add this instead */
+  overflow: hidden; /* Ensure no overflow */
+}
+
+.layer-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  background-color: #333;
+  margin-bottom: 3px;
+  border-radius: 3px;
+  border: 1px solid #555;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0; /* Add this to help with flexbox sizing */
+  overflow: hidden;
+}
+
+.rarity-input {
+  width: 55px;
+  text-align: right;
+  border: 1px solid #555;
+  background-color: #3a3a3a;
+  color: white;
+  padding: 3px 5px;
+  border-radius: 3px;
+}
+
+.save-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-right: 15px;
+  width: 100%;
+}
+
+.format-row, .number-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#png-options, #jpeg-options {
+  display: flex;
+  align-items: center;
+}
+
+#png-compression, #jpeg-quality {
+  width: 60px;
+  text-align: center;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  padding: 5px 8px;
+  color: white;
+  border-radius: 3px;
+}
+
+.metadata-option {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.metadata-option input[type="checkbox"] {
+  margin-right: 5px;
+  -webkit-appearance: checkbox;
+  width: 14px;
+  height: 14px;
+  background: #444;
+  border: 1px solid #666;
+  border-radius: 3px;
+}
+
+.metadata-option label {
+  width: auto;
+  margin-right: 0;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.start-index {
+  display: flex;
+  align-items: center;
+}
+
+.start-index input[type="number"] {
+  width: 60px;
+  background-color: #3a3a3a;
+  border: 1px solid #555;
+  padding: 5px 8px;
+  color: white;
+  border-radius: 3px;
+  text-align: right;
+}
+
+.help-text {
+  margin-top: 5px;
+  font-size: 11px;
+  color: #aaa;
+  line-height: 1.4;
+  text-align: left;
+  max-width: 340px;
+}
+
+.help-text em {
+  font-style: italic;
+}
+
+/* Status Bar */
+.status {
+  padding: 10px;
+  font-size: 12px;
+  border-radius: 3px;
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+.success {
+  color: #6bff6b;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.loading {
+  padding: 10px;
+  color: #aaa;
+  font-style: italic;
+}

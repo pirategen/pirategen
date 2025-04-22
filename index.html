@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Pirate Gen</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>PIRATE GEN</h1>
+    </div>
+
+    <div class="content-area">
+      <div class="section collection-info-section" id="collection-info-section">
+        <div class="section-header">
+          <span class="section-title">COLLECTION INFO</span>
+        </div>
+        <div class="section-content">
+          <div>
+            <div class="collection-spacing"><label for="collection-name">Name:</label></div>
+            <div class="form-group collection-column"><input class="collection-text" type="text" id="collection-name"
+                placeholder="Enter collection name..."></div>
+          </div>
+          <div>
+            <div class="collection-spacing"><label for="collection-description">Description:</label></div>
+            <div class="form-group collection-column"><textarea class="collection-text" type="text" id="collection-description"
+                rows="3" placeholder="Enter collection description..."></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section layer-groups-section" id="layer-groups-section">
+        <div class="section-header">
+          <span class="section-title">LAYER GROUPS</span>
+        </div>
+        <div class="section-content">
+          <p class="info-text">Set rarity for each layer (higher = more common)</p>
+          <div id="layer-tree">
+            <div class="loading">Loading layer structure...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="output-location">
+        <label for="output-path">Output Location:</label>
+        <div class="path-selector">
+          <input type="text" id="output-path" readonly placeholder="Select output folder...">
+          <button id="browse-btn">BROWSE</button>
+        </div>
+      </div>
+
+      <div class="generation-controls">
+        <div class="nft-count-row">
+          <div class="nft-count">
+            <label for="num-images">Number of NFTs:</label>
+            <input type="number" id="num-images" min="1" max="1000" value="10">
+          </div>
+
+          <div class="metadata-option">
+            <input type="checkbox" id="generate-metadata" checked>
+            <label for="generate-metadata">Generate Metadata</label>
+          </div>
+        </div>
+
+        <div class="start-index">
+          <label for="start-index">Start From:</label>
+          <input type="number" id="start-index" min="0" value="0">
+          <div class="help-text">
+            Generate filenames starting from a number of your choice<br>
+        </div>
+        </div>
+
+        <div class="save-options">
+          <div class="format-row">
+              <label for="save-format">Save As:</label>
+              <select id="save-format">
+                  <option value="png" selected>PNG</option>
+                  <option value="jpeg">JPEG</option>
+              </select>
+          </div>
+
+          <!-- PNG Options -->
+          <div id="png-options" class="quality-options">
+              <label for="png-compression">Compression:</label>
+              <input type="number" id="png-compression" min="0" max="9" value="0" step="1">
+              <div class="help-text">
+                  0 = No compression — fastest saves, large files<br>
+                  9 = Highest compression — slower saves, smaller files
+              </div>
+          </div>
+
+          <!-- JPEG Options -->
+          <div id="jpeg-options" class="quality-options hidden">
+              <label for="jpeg-quality">Quality:</label>
+              <input type="number" id="jpeg-quality" min="0" max="100" value="90" step="1">
+              <div class="help-text">
+                  0 = Lowest quality JPEG image (small file sizes)<br>
+                  100 = Highest quality JPEG image (large file sizes)
+              </div>
+          </div>
+      </div>
+        <button id="generate-btn" class="primary-btn">GENERATE NFTs</button>
+      </div>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+
+</html>
