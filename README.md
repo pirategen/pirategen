@@ -1,4 +1,4 @@
-## pirate gen v0.0.1 source code
+## pirate gen v0.0.1 installation
 
 - You can clone the repo and re-build the package yourself using adobe UXP - or - download the ccx file and open it.
 
