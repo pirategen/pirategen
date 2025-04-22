@@ -8,17 +8,24 @@
 
 - If you dont have a CC subscription you could take a look at GenP: https://www.reddit.com/r/GenP/wiki/redditgenpguides/
 
-<!--
-**pirategen/pirategen** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 
-Here are some ideas to get you started:
+## Features:
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- Add NFT name and Description
+- Select visible layer groups
+- Determine layer rarity (any number of 0 or below will prevent a layer from being chosen)
+- Choose Output Location
+- Choose number of images to generate
+- Add metadata optionally
+- Start generation from index (generate collection in batches)
+- Save as PNG or JPEG
+- Choose compression when saving as PNG
+- Choose quality when saving as JPEG
+
+##v0.0.2 Improvements:
+
+- Optimized generation time
+
+##Planned Improvements:
+
+- Show last saved image index to make it easier to see which number the 'Start From' field should have when generating in batches
