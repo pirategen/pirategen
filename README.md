@@ -1,4 +1,10 @@
-## Hi there 👋
+## pirate gen v0.0.1 source code. You can clone the repo and re-build the package yourself using adobe UXP - or - download the ccx file and open it.
+
+## Downloading the ccx file with Creative Cloud open is the most simple way to install, otherwise you will have to build your own pkg using the adobe UXP. If you choose to build your own package, download the UXP Dev Tools from CC, create a package with the simple-layer template, and replace the directory it installs with a clone of this repo (you might have to mess around with the manifest if you're running into issues).
+
+## Here is a relevant thread on how to install a non-marketplace plugin on Creative Cloud: https://forums.creativeclouddeveloper.com/t/methods-for-installing-non-marketplace-plugins/6005
+
+## If you dont have a CC subscription you could take a look at GenP: https://www.reddit.com/r/GenP/wiki/redditgenpguides/
 
 <!--
 **pirategen/pirategen** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
