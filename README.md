@@ -1,4 +1,6 @@
-## pirate gen v0.0.1 source code. You can clone the repo and re-build the package yourself using adobe UXP - or - download the ccx file and open it.
+## pirate gen v0.0.1 source code. 
+
+## You can clone the repo and re-build the package yourself using adobe UXP - or - download the ccx file and open it.
 
 ## Downloading the ccx file with Creative Cloud open and double clicking it is the most simple way to install, otherwise you will have to build your own pkg using the adobe UXP. If you choose to build your own package, download the UXP Dev Tools from CC, create a package, and replace the directory it installs with a clone of this repo (you might have to mess around with the manifest if you're running into issues).
 
