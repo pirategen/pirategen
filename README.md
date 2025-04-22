@@ -22,6 +22,11 @@
 - Choose compression when saving as PNG
 - Choose quality when saving as JPEG
 
+## Tips:
+
+- Make sure all of the layers that you want in the final images are contained within groups, the plugin will only detect layers within groups!
+- All blending modes, masks, filters, effects, etc.. that have been applied to layers or groups will be retained, the final images appear exactly as they do in PS.
+
 ## v0.0.2 Improvements:
 
 - Optimized generation time
@@ -32,6 +37,7 @@
 - Show last saved image index to make it easier to see which number the 'Start From' field should have when generating in batches
 
 
+## UI Example (PS light theme):
 
 <img width="648" alt="Screenshot 2025-04-22 at 4 34 38 PM" src="https://github.com/user-attachments/assets/4052632b-67f2-4ef9-8394-b47239f28501" />
 
