@@ -11,7 +11,7 @@
 
 ## Features:
 
-- Add NFT name and Description
+- Add NFT name and description
 - Select visible layer groups
 - Determine layer rarity (any number of 0 or below will prevent a layer from being chosen)
 - Choose Output Location
