@@ -408,7 +408,7 @@ const app = {
     const collectionDescription = this.collectionDescriptionInput.value.trim();
 
     if (!collectionName) {
-        this.showStatus('Please enter a collection name', 'error');
+        this.showStatus('Please enter a name for your NFTs', 'error');
         return false;
     }
 
