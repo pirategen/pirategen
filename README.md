@@ -39,5 +39,6 @@
 
 ## UI Example (PS light theme):
 
-<img width="648" alt="Screenshot 2025-04-22 at 4 34 38 PM" src="https://github.com/user-attachments/assets/4052632b-67f2-4ef9-8394-b47239f28501" />
+<img width="599" alt="Screenshot 2025-04-23 at 2 36 40 AM" src="https://github.com/user-attachments/assets/5d923e87-1d5b-4faa-8024-7a7966052a58" />
+
 
