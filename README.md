@@ -1,4 +1,4 @@
-## pirate gen v0.0.2 installation
+## pirate gen v0.1.0 installation
 
 - You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.0.2 release.
 
@@ -27,14 +27,9 @@
 - Make sure all of the layers that you want in the final images are contained within groups, the plugin will only detect layers within groups!
 - All blending modes, masks, filters, effects, etc.. that have been applied to layers or groups will be retained, the final images appear exactly as they do in PS.
 
-## v0.0.2 Improvements:
-
-- Optimized generation time
-- UI updates to match users Adobe theme
 
 ## Planned Improvements:
 
-- Show last saved image index to make it easier to see which number the 'Start From' field should have when generating in batches
 - See layers outside of groups
 - Select / deselect all groups
 - Set rarity to (x) for group / all groups
