@@ -35,6 +35,7 @@
 ## Planned Improvements:
 
 - Show last saved image index to make it easier to see which number the 'Start From' field should have when generating in batches
+- See layers outside of groups
 - Select / deselect all groups
 - Set rarity to (x) for group / all groups
 
