@@ -3,6 +3,7 @@ const app = {
   // Store data
   layerGroups: [],
   selectedOutputPath: '',
+  lastSavedFile: null,
 
   // Initialize the application
   async init() {
@@ -19,6 +20,7 @@ const app = {
     this.collectionDescriptionInput = document.getElementById('collection-description');
     this.generateMetadataCheckbox = document.getElementById('generate-metadata');
     this.startIndexInput = document.getElementById('start-index');
+    this.startIndexHelp = document.querySelector('.start-index .help-text');
     this.generateBtn.disabled = true;
 
     this.saveFormatSelect = document.getElementById('save-format');
@@ -624,10 +626,14 @@ const app = {
                 const extension = format === 'png' ? 'png' : 'jpg';
                 const fileName = `${nftIndex}.${extension}`;
 
-                if (format === 'png') {
-                  await this.saveAsPNG(doc, imagesFolder, fileName);
-                } else {
-                  await this.saveAsJPEG(doc, imagesFolder, fileName);
+                try {
+                    if (format === 'png') {
+                      await this.saveAsPNG(doc, imagesFolder, fileName)
+                    } else {
+                      await this.saveAsJPEG(doc, imagesFolder, fileName)
+                    }
+                } catch (e) {
+                    throw e
                 }
 
                 // Generate metadata JSON
@@ -647,9 +653,9 @@ const app = {
         }
 
         if (this.generateMetadataCheckbox.checked) {
-          this.showStatus(`Successfully generated ${numImages} NFT images and metadata!`, 'success');
+          this.showStatus(`Successfuly generated ${numImages} NFT images and metadata!`, 'success');
         } else {
-          this.showStatus(`Successfully generated ${numImages} NFT images without metadata!`, 'success');
+          this.showStatus(`Successfuly generated ${numImages} NFT images without metadata!`, 'success');
         }
 
     } catch (error) {
@@ -780,7 +786,15 @@ const app = {
         const photoshop = require('photoshop');
         const fs = require('uxp').storage.localFileSystem;
 
-        // Create file in the output folder
+        try {
+            await folder.getEntry(fileName);
+            console.error(`File ${fileName} already exists, will not overwrite`)
+            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error')
+            throw error;
+        } catch (e) {
+
+        }
+
         const file = await folder.createFile(fileName, { overwrite: true });
 
         // Get the quality value
@@ -796,6 +810,17 @@ const app = {
             await activeDoc.saveAs.jpg(file, { quality: quality }, true);
         }, { commandName: "Save As JPEG" });
 
+        this.lastSavedFile = {
+            path: folder.nativePath,
+            name: fileName,
+            format: 'PNG',
+            index: fileName.split('.')[0]
+        };
+
+        if (this.startIndexHelp) {
+            this.startIndexHelp.innerHTML = `Last saved: <strong>${this.lastSavedFile.name}</strong> in ${this.lastSavedFile.path}`;
+        }
+
         return file;
     } catch (error) {
         console.error('Error saving JPEG:', error);
@@ -810,19 +835,23 @@ const app = {
         const photoshop = require('photoshop');
         const fs = require('uxp').storage.localFileSystem;
 
-        // Create file in the output folder
+        try {
+            await folder.getEntry(fileName);
+            console.error(`File ${fileName} already exists, will not overwrite`)
+            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error')
+            throw error;
+        } catch (e) {
+
+        }
+
         const file = await folder.createFile(fileName, { overwrite: true });
 
-        // Get the compression value
         const compression = parseInt(this.pngCompression.value);
 
-        // Create a modal execution context for export
         await photoshop.core.executeAsModal(async () => {
-            // Get the active document
             const app = photoshop.app;
             const activeDoc = app.activeDocument;
 
-            // Use saveAs with PNG format and the selected compression
             await activeDoc.saveAs.png(file, {
                 compression: compression,
                 interlaced: false,
@@ -830,9 +859,21 @@ const app = {
             }, true);
         }, { commandName: "Save As PNG" });
 
+        this.lastSavedFile = {
+            path: folder.nativePath,
+            name: fileName,
+            format: 'PNG',
+            index: fileName.split('.')[0]
+        };
+
+        if (this.startIndexHelp) {
+            this.startIndexHelp.innerHTML = `Last saved: <strong>${this.lastSavedFile.name}</strong> in ${this.lastSavedFile.path}`;
+        }
+
         return file;
     } catch (error) {
         console.error('Error saving PNG:', error);
+
         throw error;
     }
   },
