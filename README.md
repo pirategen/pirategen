@@ -1,6 +1,6 @@
 ## pirate gen v0.1.0 installation
 
-- You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.0.2 release.
+- You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.1.0 release.
 
 - If you choose to build your own plugin, download the UXP Dev Tools from CC, create a plugin, and replace the directory it installs with a clone of this repo (ccx file not needed) (you might have to mess around with the manifest if you're running into issues).
 
