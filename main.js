@@ -491,7 +491,7 @@ const app = {
 
   // Generate NFT images
   async generateNFTs() {
-    // Validate collection info
+    // Validation code
     if (!this.validateCollectionInfo()) {
         return;
     }
@@ -560,111 +560,159 @@ const app = {
         const { imagesFolder, jsonFolder } = await this.createOutputFolders(fs, baseFolder);
         this.showStatus('Created output folder structure');
 
-        // Generate each image
+        // speed up layer lookups with layer cache
+        this.buildLayerCache(doc.layers);
+
+        // Create an array to store all NFT configurations
+        const nftConfigurations = [];
+        const format = this.saveFormatSelect.value;
+        const extension = format === 'png' ? 'png' : 'jpg';
+
+        // Pre-calculate all layer selections for all NFTs
         for (let i = 0; i < numImages; i++) {
-            // Use the startIndex to calculate the current file index
             const nftIndex = startIndex + i;
-            this.showStatus(`Generating NFT ${1 + i} of ${numImages} (file index: ${nftIndex})...`);
-
-
             const selectedLayerInfo = [];
+            const selectedLayerIds = [];
 
-            try {
-                // Use a single modal execution for all document modifications for this image
-                await photoshop.core.executeAsModal(async () => {
-                    // Make sure we have the current document state
-                    const currentDoc = app.activeDocument;
+            // For each selected group, choose a layer based on rarity
+            for (const group of selectedGroups) {
+                // Select one layer based on rarity
+                const selectedLayerId = this.selectLayerByRarity(group);
+                if (!selectedLayerId) continue;
 
-                    // 1. Hide all layers first
-                    this.hideAllLayersRecursive(currentDoc.layers);
-
-                    // 2. For each selected group, choose a layer based on rarity and show it
-                    const selectedLayerIds = [];
-
-                    for (const group of selectedGroups) {
-                        // Find the actual layer group in the document
-                        const docGroup = this.findLayerById(currentDoc.layers, group.id);
-                        if (!docGroup) continue;
-
-                        // Select one layer based on rarity
-                        const selectedLayerId = this.selectLayerByRarity(group);
-                        if (!selectedLayerId) continue;
-
-                        // Find the selected layer in the document
-                        const selectedLayer = this.findLayerById(currentDoc.layers, selectedLayerId);
-                        if (!selectedLayer) continue;
-
-                        if (this.generateMetadataCheckbox.checked) {
-                          // Save the selected layer info for metadata
-                          const selectedLayerData = group.children.find(layer => layer.id === selectedLayerId);
-                          if (selectedLayerData) {
-                              selectedLayerInfo.push({
-                                  groupName: group.name,
-                                  layerName: selectedLayerData.name
-                              });
-                          }
-                        }
-
-                        // Add to our selected layer IDs list
-                        selectedLayerIds.push(selectedLayerId);
-
-                        // Make the selected layer visible
-                        selectedLayer.visible = true;
-
-                        // Make all parent groups visible too
-                        let parent = selectedLayer.parent;
-                        while (parent && parent !== currentDoc) {
-                            parent.visible = true;
-                            parent = parent.parent;
-                        }
-                    }
-
-                }, { commandName: "Set Up NFT Layers" });
-
-                // Save as png or jpeg (in its own modal execution) with sequential numbering
-                const format = this.saveFormatSelect.value;
-                const extension = format === 'png' ? 'png' : 'jpg';
-                const fileName = `${nftIndex}.${extension}`;
-
-                try {
-                    if (format === 'png') {
-                      await this.saveAsPNG(doc, imagesFolder, fileName)
-                    } else {
-                      await this.saveAsJPEG(doc, imagesFolder, fileName)
-                    }
-                } catch (e) {
-                    throw e
+                // Find the selected layer data
+                const selectedLayerData = group.children.find(layer => layer.id === selectedLayerId);
+                if (selectedLayerData) {
+                    selectedLayerInfo.push({
+                        groupName: group.name,
+                        layerName: selectedLayerData.name
+                    });
                 }
 
-                // Generate metadata JSON
-                if (this.generateMetadataCheckbox.checked) {
-                  const jsonContent = this.generateMetadata(nftIndex, selectedLayerInfo, extension);
-                  const jsonFileName = `${nftIndex}.json`;
-                  await this.saveJsonFile(jsonFolder, jsonFileName, jsonContent);
-                }
-
-            } catch (error) {
-                console.error(`Error generating NFT ${nftIndex}:`, error);
-                this.showStatus(`Error on NFT ${nftIndex}: ${error.message}`, 'error');
+                // Add to our selected layer IDs list
+                selectedLayerIds.push(selectedLayerId);
             }
 
-            // Short delay to prevent UI freezing
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Store this NFT's configuration
+            nftConfigurations.push({
+                nftIndex,
+                selectedLayerInfo,
+                selectedLayerIds,
+                fileName: `${nftIndex}.${extension}`
+            });
         }
 
+        // Process NFTs in batches (here we process all at once)
+        this.showStatus(`Preparing to generate ${numImages} NFTs...`);
+
+        // Single modal execution for all layer setup
+        await photoshop.core.executeAsModal(async () => {
+            // Suspend history for performance
+            this.suspendHistory(doc);
+            // Process each NFT configuration one by one
+            for (let i = 0; i < nftConfigurations.length; i++) {
+                const config = nftConfigurations[i];
+                this.showStatus(`Setting up layers for NFT ${i + 1} of ${numImages}...`);
+                this.applyVisibilityState(doc, config.selectedLayerIds);
+
+                // Save the current NFT
+                if (format === 'png') {
+                    await this.saveAsPNG(doc, imagesFolder, config.fileName);
+                } else {
+                    await this.saveAsJPEG(doc, imagesFolder, config.fileName);
+                }
+
+                // Generate metadata if needed
+                if (this.generateMetadataCheckbox.checked) {
+                    const jsonContent = this.generateMetadata(config.nftIndex, config.selectedLayerInfo, extension);
+                    await this.saveJsonFile(jsonFolder, `${config.nftIndex}.json`, jsonContent);
+                }
+
+                // Short delay to prevent UI freezing
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+
+            // Restore history
+            this.restoreHistory(doc);
+        }, { commandName: "Generate NFT Batch" });
+
+        // Generate all metadata if needed
         if (this.generateMetadataCheckbox.checked) {
-          this.showStatus(`Successfuly generated ${numImages} NFT images and metadata!`, 'success');
+            this.showStatus(`Generating metadata files...`);
+
+            // Create a batch of promises for metadata generation
+            const metadataPromises = nftConfigurations.map(async (config, index) => {
+                // Generate metadata JSON
+                const jsonContent = this.generateMetadata(
+                    config.nftIndex,
+                    config.selectedLayerInfo,
+                    extension
+                );
+
+                // Save JSON file
+                return this.saveJsonFile(
+                    jsonFolder,
+                    `${config.nftIndex}.json`,
+                    jsonContent
+                );
+            });
+
+            // Process metadata in parallel batches to speed up
+            // Process in chunks of 10 to avoid overwhelming the filesystem
+            const batchSize = 10;
+            for (let i = 0; i < metadataPromises.length; i += batchSize) {
+                const batch = metadataPromises.slice(i, i + batchSize);
+                await Promise.all(batch);
+
+                // Update status occasionally
+                if (i % 50 === 0) {
+                    this.showStatus(`Generated metadata for ${i} of ${numImages} NFTs...`);
+                }
+            }
+        }
+
+        this.clearLayerCache();
+
+        if (this.generateMetadataCheckbox.checked) {
+            this.showStatus(`Successfully generated ${numImages} NFT images and metadata!`, 'success');
         } else {
-          this.showStatus(`Successfuly generated ${numImages} NFT images without metadata!`, 'success');
+            this.showStatus(`Successfully generated ${numImages} NFT images without metadata!`, 'success');
         }
 
     } catch (error) {
         console.error('Error generating NFTs:', error);
         this.showStatus('Error generating NFTs: ' + error.message, 'error');
+        this.clearLayerCache();
     } finally {
         this.generateBtn.disabled = false;
     }
   },
+
+// Add this method to your app object to build a layer cache
+buildLayerCache(layers) {
+    // Create a cache object if it doesn't exist
+    if (!this.layerCache) {
+        this.layerCache = new Map();
+    }
+
+    // Recursive function to add layers to cache
+    const addToCache = (layers) => {
+        for (const layer of layers) {
+            // Add this layer to cache using its ID as key
+            this.layerCache.set(layer.id, layer);
+
+            // Process child layers if this is a group
+            if (layer.layers && layer.layers.length > 0) {
+                addToCache(layer.layers);
+            }
+        }
+    };
+
+    // Build the cache
+    addToCache(layers);
+
+    return this.layerCache;
+    },
 
   // Helper function to find a layer by name
   findLayerByName(layers, name) {
@@ -749,20 +797,127 @@ const app = {
     return validLayers[validLayers.length - 1].id;
   },
 
-  // Helper to hide all layers recursively
-  hideAllLayersRecursive(layers) {
-    for (const layer of layers) {
-        layer.visible = false;
+  // This replaces individual layer visibility operations with a more efficient approach
+  applyVisibilityState(doc, layerIds) {
+    // Create a map for quick lookup of layers that should be visible
+    const visibilityMap = new Set(layerIds);
 
-        // Process child layers if this is a group
-        if (layer.layers && layer.layers.length > 0) {
-            this.hideAllLayersRecursive(layer.layers);
+    // Recursive function to apply visibility
+    const setVisibility = (layers) => {
+        for (const layer of layers) {
+            // Set layer visibility based on if it's in our map
+            const shouldBeVisible = visibilityMap.has(layer.id);
+
+            // Only change visibility if necessary
+            if (layer.visible !== shouldBeVisible) {
+                layer.visible = shouldBeVisible;
+            }
+
+            // If this is a layer group that contains one of our target layers,
+            // we need to make it visible and check its children
+            if (layer.layers && layer.layers.length > 0) {
+                // Check if any children need to be visible
+                const hasVisibleChildren = this.layerGroupHasVisibleDescendant(layer, visibilityMap);
+
+                // If any children need to be visible, this group must be visible
+                if (hasVisibleChildren) {
+                    layer.visible = true;
+                    // Recurse into children
+                    setVisibility(layer.layers);
+                }
+            }
         }
+    };
+
+    // Apply visibility changes
+    setVisibility(doc.layers);
+  },
+
+  // Helper method to check if any descendant needs to be visible
+  layerGroupHasVisibleDescendant(group, visibilityMap) {
+        if (visibilityMap.has(group.id)) return true;
+
+        if (group.layers && group.layers.length > 0) {
+            for (const child of group.layers) {
+                if (visibilityMap.has(child.id)) return true;
+
+                if (child.layers && child.layers.length > 0) {
+                    // Recursive check for deeper layer groups
+                    if (this.layerGroupHasVisibleDescendant(child, visibilityMap)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+  },
+
+  suspendHistory(doc) {
+    // Get the application
+    const photoshop = require('photoshop');
+    const app = photoshop.app;
+
+    // Store the current active history state
+    this.historyState = doc.activeHistoryState;
+
+    // Attempt to suspend history - this is a performance optimization
+    try {
+        // Different ways to handle history depending on Photoshop version
+        if (app.preferences.hasKey("performancePrefs") &&
+            app.preferences.performancePrefs.hasKey("maximumHistoryStates")) {
+            // Store original value
+            this.originalHistoryStates = app.preferences.performancePrefs.maximumHistoryStates;
+
+            // Temporarily reduce history states to minimum
+            app.preferences.performancePrefs.maximumHistoryStates = 1;
+        }
+
+        // Some versions support suspendHistory directly
+        if (typeof doc.suspendHistory === 'function') {
+            doc.suspendHistory = true;
+        }
+    } catch (e) {
+        console.log('History suspension not supported in this version', e);
+    }
+  },
+
+  // Add a companion method to restore history
+  restoreHistory(doc) {
+    // Get the application
+    const photoshop = require('photoshop');
+    const app = photoshop.app;
+
+    try {
+        // Restore original history settings
+        if (app.preferences.hasKey("performancePrefs") &&
+            app.preferences.performancePrefs.hasKey("maximumHistoryStates") &&
+            this.originalHistoryStates !== undefined) {
+            app.preferences.performancePrefs.maximumHistoryStates = this.originalHistoryStates;
+        }
+
+        // If suspendHistory was supported
+        if (typeof doc.suspendHistory === 'function') {
+            doc.suspendHistory = false;
+        }
+
+        // Optionally, revert to original history state
+        if (this.historyState) {
+            doc.activeHistoryState = this.historyState;
+        }
+    } catch (e) {
+        console.log('Error restoring history settings', e);
     }
   },
 
   // Helper to find a layer by ID
   findLayerById(layers, id) {
+    // If we have a cache, use it for faster lookup
+    if (this.layerCache && this.layerCache.has(id)) {
+        return this.layerCache.get(id);
+    }
+
+    // If no cache or layer not in cache, fall back to traversal
     for (const layer of layers) {
         if (layer.id === id) {
             return layer;
@@ -780,40 +935,53 @@ const app = {
     return null;
   },
 
+  // clear the cache when needed
+  clearLayerCache() {
+        if (this.layerCache) {
+            this.layerCache.clear();
+        }
+  },
+
   // Save as JPEG
   async saveAsJPEG(doc, folder, fileName) {
     try {
         const photoshop = require('photoshop');
         const fs = require('uxp').storage.localFileSystem;
 
+        // Check if file exists - but do it outside the modal execution
+        let fileExists = false;
         try {
             await folder.getEntry(fileName);
-            console.error(`File ${fileName} already exists, will not overwrite`)
-            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error')
-            throw error;
+            fileExists = true;
         } catch (e) {
-
+            // File doesn't exist
         }
 
-        const file = await folder.createFile(fileName, { overwrite: true });
+        if (fileExists) {
+            console.error(`File ${fileName} already exists, will not overwrite`);
+            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error');
+            throw new Error(`File ${fileName} already exists, will not overwrite`);
+        }
 
-        // Get the quality value
+        // Create file outside of modal execution to reduce overhead
+        const file = await folder.createFile(fileName, { overwrite: true });
         const quality = parseInt(this.jpegQuality.value);
 
-        // Create a modal execution context for export
-        await photoshop.core.executeAsModal(async () => {
-            // Get the active document
-            const app = photoshop.app;
-            const activeDoc = app.activeDocument;
+        // Configure save options outside modal execution
+        const saveOptions = {
+            quality: quality,
+            optimized: true, // Use optimized encoding
+            progressive: false // Progressive JPEGs are slower to save
+        };
 
-            // Use the saveAs operation with the selected quality
-            await activeDoc.saveAs.jpg(file, { quality: quality }, true);
-        }, { commandName: "Save As JPEG" });
+        // Save file with optimized options
+        // No need for a separate modal execution - this will happen in our batch modal context
+        await doc.saveAs.jpg(file, saveOptions, true);
 
         this.lastSavedFile = {
             path: folder.nativePath,
             name: fileName,
-            format: 'PNG',
+            format: 'JPEG',
             index: fileName.split('.')[0]
         };
 
@@ -835,29 +1003,36 @@ const app = {
         const photoshop = require('photoshop');
         const fs = require('uxp').storage.localFileSystem;
 
+        // Check if file exists - but do it outside the modal execution
+        let fileExists = false;
         try {
             await folder.getEntry(fileName);
-            console.error(`File ${fileName} already exists, will not overwrite`)
-            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error')
-            throw error;
+            fileExists = true;
         } catch (e) {
-
+            // File doesn't exist
         }
 
-        const file = await folder.createFile(fileName, { overwrite: true });
+        if (fileExists) {
+            console.error(`File ${fileName} already exists, will not overwrite`);
+            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error');
+            throw new Error(`File ${fileName} already exists, will not overwrite`);
+        }
 
+        // Create file outside of modal execution to reduce overhead
+        const file = await folder.createFile(fileName, { overwrite: true });
         const compression = parseInt(this.pngCompression.value);
 
-        await photoshop.core.executeAsModal(async () => {
-            const app = photoshop.app;
-            const activeDoc = app.activeDocument;
+        // Configure save options outside modal execution
+        const saveOptions = {
+            compression: compression,
+            interlaced: false,
+            transparency: true,
+            // Add a smaller matte rectangle if possible to improve compression
+            smallestMatte: true
+        };
 
-            await activeDoc.saveAs.png(file, {
-                compression: compression,
-                interlaced: false,
-                transparency: true
-            }, true);
-        }, { commandName: "Save As PNG" });
+        // Save file
+        await doc.saveAs.png(file, saveOptions, true);
 
         this.lastSavedFile = {
             path: folder.nativePath,
@@ -873,7 +1048,6 @@ const app = {
         return file;
     } catch (error) {
         console.error('Error saving PNG:', error);
-
         throw error;
     }
   },
