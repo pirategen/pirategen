@@ -30,6 +30,7 @@
 
 ## Planned Improvements:
 
+- Improve batch processing interface
 - See layers outside of groups
 - Select / deselect all groups
 - Set rarity to (x) for group / all groups
