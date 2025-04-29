@@ -30,6 +30,7 @@
 
 ## Planned Improvements:
 
+- Move group to new position in stack
 - Improve batch processing interface
 - See layers outside of groups
 - Select / deselect all groups
