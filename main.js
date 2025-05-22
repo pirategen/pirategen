@@ -606,35 +606,40 @@ const app = {
         this.showStatus(`Preparing to generate ${numImages} NFTs...`);
 
         // Single modal execution for all layer setup
-        await photoshop.core.executeAsModal(async () => {
-            // Suspend history for performance
-            this.suspendHistory(doc);
-            // Process each NFT configuration one by one
-            for (let i = 0; i < nftConfigurations.length; i++) {
-                const config = nftConfigurations[i];
-                this.showStatus(`Setting up layers for NFT ${i + 1} of ${numImages}...`);
-                this.applyVisibilityState(doc, config.selectedLayerIds);
+        try {
+            await photoshop.core.executeAsModal(async () => {
+                // Suspend history for performance
+                this.suspendHistory(doc);
+                // Process each NFT configuration one by one
+                for (let i = 0; i < nftConfigurations.length; i++) {
+                    const config = nftConfigurations[i];
+                    this.showStatus(`Setting up layers for NFT ${i + 1} of ${numImages}...`);
+                    this.applyVisibilityState(doc, config.selectedLayerIds);
 
-                // Save the current NFT
-                if (format === 'png') {
-                    await this.saveAsPNG(doc, imagesFolder, config.fileName);
-                } else {
-                    await this.saveAsJPEG(doc, imagesFolder, config.fileName);
+                    // Save the current NFT
+                    if (format === 'png') {
+                        await this.saveAsPNG(doc, imagesFolder, config.fileName);
+                    } else {
+                        await this.saveAsJPEG(doc, imagesFolder, config.fileName);
+                    }
+
+                    // Generate metadata if needed
+                    if (this.generateMetadataCheckbox.checked) {
+                        const jsonContent = this.generateMetadata(config.nftIndex, config.selectedLayerInfo, extension);
+                        await this.saveJsonFile(jsonFolder, `${config.nftIndex}.json`, jsonContent);
+                    }
+
+                    // Short delay to prevent UI freezing
+                    await new Promise(resolve => setTimeout(resolve, 50));
                 }
 
-                // Generate metadata if needed
-                if (this.generateMetadataCheckbox.checked) {
-                    const jsonContent = this.generateMetadata(config.nftIndex, config.selectedLayerInfo, extension);
-                    await this.saveJsonFile(jsonFolder, `${config.nftIndex}.json`, jsonContent);
-                }
-
-                // Short delay to prevent UI freezing
-                await new Promise(resolve => setTimeout(resolve, 50));
-            }
-
-            // Restore history
-            this.restoreHistory(doc);
-        }, { commandName: "Generate NFT Batch" });
+                // Restore history
+                this.restoreHistory(doc);
+            }, { commandName: "Generating NFT's" });
+        } catch (modalError) {
+            // Re-throw the error with its original message
+            throw new Error(modalError.message || modalError.toString());
+        }
 
         // Generate all metadata if needed
         if (this.generateMetadataCheckbox.checked) {
@@ -681,7 +686,8 @@ const app = {
 
     } catch (error) {
         console.error('Error generating NFTs:', error);
-        this.showStatus('Error generating NFTs: ' + error.message, 'error');
+        const errorMessage = error.message || 'An unknown error occurred while generating NFTs';
+        this.showStatus('Error generating NFTs: ' + errorMessage, 'error');
         this.clearLayerCache();
     } finally {
         this.generateBtn.disabled = false;
@@ -958,9 +964,10 @@ buildLayerCache(layers) {
         }
 
         if (fileExists) {
-            console.error(`File ${fileName} already exists, will not overwrite`);
-            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error');
-            throw new Error(`File ${fileName} already exists, will not overwrite`);
+            const errorMsg = `File ${fileName} already exists, will not overwrite`;
+            console.error(errorMsg);
+            this.showStatus(errorMsg, 'error');
+            throw new Error(errorMsg);
         }
 
         // Create file outside of modal execution to reduce overhead
@@ -991,11 +998,11 @@ buildLayerCache(layers) {
 
         return file;
     } catch (error) {
-        console.error('Error saving JPEG:', error);
-        throw error;
+        const errorMsg = error.message || 'Unknown error occurred while saving JPEG';
+        console.error('Error saving JPEG:', errorMsg);
+        throw new Error(errorMsg);
     }
   },
-
 
   // Save as PNG
   async saveAsPNG(doc, folder, fileName) {
@@ -1013,9 +1020,10 @@ buildLayerCache(layers) {
         }
 
         if (fileExists) {
-            console.error(`File ${fileName} already exists, will not overwrite`);
-            this.showStatus(`File ${fileName} already exists, will not overwrite`, 'error');
-            throw new Error(`File ${fileName} already exists, will not overwrite`);
+            const errorMsg = `File ${fileName} already exists, will not overwrite`;
+            console.error(errorMsg);
+            this.showStatus(errorMsg, 'error');
+            throw new Error(errorMsg);
         }
 
         // Create file outside of modal execution to reduce overhead
@@ -1047,8 +1055,9 @@ buildLayerCache(layers) {
 
         return file;
     } catch (error) {
-        console.error('Error saving PNG:', error);
-        throw error;
+        const errorMsg = error.message || 'Unknown error occurred while saving PNG';
+        console.error('Error saving PNG:', errorMsg);
+        throw new Error(errorMsg);
     }
   },
 
