@@ -2,6 +2,8 @@
 
 - You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.1.1 release.
 
+- Downloading the .ccx file from the latest release is the most simple way to install the plugin. Simply open Creative Cloud, and double click the .ccx file.
+
 - If you choose to build your own plugin, download the UXP Dev Tools from CC, create a plugin, and replace the directory it installs with a clone of this repo (ccx file not needed) (you might have to mess around with the manifest if you're running into issues).
 
 - Here is a relevant thread on how to install a non-marketplace plugin on Creative Cloud: https://forums.creativeclouddeveloper.com/t/methods-for-installing-non-marketplace-plugins/6005
