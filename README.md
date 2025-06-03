@@ -1,6 +1,6 @@
-## pirate gen v0.1.1 installation
+## pirate gen v0.1.2 installation
 
-- You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.1.1 release.
+- You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.1.2 release.
 
 - Downloading the .ccx file from the latest release is the most simple way to install the plugin. Simply open Creative Cloud, and double click the .ccx file.
 
