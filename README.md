@@ -1,6 +1,8 @@
-## pirate gen v0.1.0 installation
+## pirate gen v0.1.1 installation
 
-- You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.1.0 release.
+- You can clone the repo and re-build the plugin yourself using adobe UXP - or - download the v0.1.1 release.
+
+- Downloading the .ccx file from the latest release is the most simple way to install the plugin. Simply open Creative Cloud, and double click the .ccx file.
 
 - If you choose to build your own plugin, download the UXP Dev Tools from CC, create a plugin, and replace the directory it installs with a clone of this repo (ccx file not needed) (you might have to mess around with the manifest if you're running into issues).
 
@@ -31,7 +33,6 @@
 ## Planned Improvements:
 
 - Move group to new position in stack
-- Improve batch processing interface
 - See layers outside of groups
 - Select / deselect all groups
 - Set rarity to (x) for group / all groups
