@@ -182,21 +182,23 @@ label {
   color: var(--uxp-host-text-color, #000000);
 }
 
+/* MINIMAL FIX: Cross-platform input visibility */
+input[type="text"], textarea, input[type="number"], .rarity-input, #png-compression, #jpeg-quality, select {
+  background-color: var(--uxp-host-background-color-secondary, rgba(128, 128, 128, 0.15)) !important;
+  color: var(--uxp-host-text-color, inherit) !important;
+  -webkit-text-fill-color: var(--uxp-host-text-color, inherit) !important;
+  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
+}
+
 input[type="number"] {
   width: 50px;
-  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
-  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
   padding: 2px 4px;
-  color: var(--uxp-host-text-color, #000000);
   text-align: right;
 }
 
 input[type="text"], textarea {
   flex: 1;
-  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
-  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
   padding: 4px 6px;
-  color: var(--uxp-host-text-color, #000000);
 }
 
 /* Button Styles */
@@ -334,9 +336,6 @@ button:disabled {
 .rarity-input {
   width: 45px;
   text-align: right;
-  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
-  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
-  color: var(--uxp-host-text-color, #000000);
   padding: 2px 4px;
 }
 
@@ -362,10 +361,7 @@ button:disabled {
 #png-compression, #jpeg-quality {
   width: 50px;
   text-align: center;
-  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
-  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
   padding: 2px 4px;
-  color: var(--uxp-host-text-color, #000000);
 }
 
 .metadata-option {
@@ -393,10 +389,7 @@ button:disabled {
 
 .start-index input[type="number"] {
   width: 50px;
-  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
-  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
   padding: 2px 4px;
-  color: var(--uxp-host-text-color, #000000);
   text-align: right;
 }
 
@@ -436,12 +429,4 @@ button:disabled {
   padding: 10px;
   color: var(--uxp-host-text-secondary-color, rgba(128, 128, 128, 0.9));
   font-style: italic;
-}
-
-/* Dropdown styling */
-select {
-  background-color: var(--uxp-host-background-color-secondary, rgba(255, 255, 255, 0.1));
-  border: 1px solid var(--uxp-host-border-color, rgba(128, 128, 128, 0.4));
-  padding: 2px 4px;
-  color: var(--uxp-host-text-color, #000000);
 }

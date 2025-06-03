@@ -608,36 +608,38 @@ const app = {
         // Single modal execution for all layer setup
         try {
             await photoshop.core.executeAsModal(async () => {
-                // Suspend history for performance
+                // Only suspend history inside modal for performance
                 this.suspendHistory(doc);
+                
                 // Process each NFT configuration one by one
                 for (let i = 0; i < nftConfigurations.length; i++) {
                     const config = nftConfigurations[i];
-                    this.showStatus(`Setting up layers for NFT ${i + 1} of ${numImages}...`);
+                    
+                    // Update status outside of intensive operations
+                    if (i % 5 === 0) { // Update every 5 NFTs instead of every NFT
+                        this.showStatus(`Processing NFT ${i + 1} of ${numImages}...`);
+                    }
+                    
                     this.applyVisibilityState(doc, config.selectedLayerIds);
-
+        
                     // Save the current NFT
                     if (format === 'png') {
                         await this.saveAsPNG(doc, imagesFolder, config.fileName);
                     } else {
                         await this.saveAsJPEG(doc, imagesFolder, config.fileName);
                     }
-
-                    // Generate metadata if needed
-                    if (this.generateMetadataCheckbox.checked) {
-                        const jsonContent = this.generateMetadata(config.nftIndex, config.selectedLayerInfo, extension);
-                        await this.saveJsonFile(jsonFolder, `${config.nftIndex}.json`, jsonContent);
+        
+                    // Minimal delay to prevent UI freezing
+                    if (i % 10 === 0) { // Only delay every 10 NFTs
+                        await new Promise(resolve => setTimeout(resolve, 25));
                     }
-
-                    // Short delay to prevent UI freezing
-                    await new Promise(resolve => setTimeout(resolve, 50));
                 }
-
+        
                 // Restore history
                 this.restoreHistory(doc);
-            }, { commandName: "Generating NFT's" });
+            }, { commandName: "Generating NFTs" }); // Shorter, more descriptive name
+            
         } catch (modalError) {
-            // Re-throw the error with its original message
             throw new Error(modalError.message || modalError.toString());
         }
 
