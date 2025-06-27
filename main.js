@@ -21,6 +21,7 @@ const app = {
     this.generateMetadataCheckbox = document.getElementById('generate-metadata');
     this.startIndexInput = document.getElementById('start-index');
     this.startIndexHelp = document.querySelector('.start-index .help-text');
+    this.refreshBtn = document.getElementById('refresh-btn');
     this.generateBtn.disabled = true;
 
     this.saveFormatSelect = document.getElementById('save-format');
@@ -32,6 +33,7 @@ const app = {
     // Event listeners
     this.browseBtn.addEventListener('click', () => this.browseForFolder());
     this.generateBtn.addEventListener('click', () => this.generateNFTs());
+    this.refreshBtn.addEventListener('click', () => this.refreshLayerStructure());
     this.saveFormatSelect.addEventListener('change', () => this.toggleSaveOptions());
 
     this.pngCompression.addEventListener('change', () => {
@@ -78,8 +80,103 @@ const app = {
     }
   },
 
+  // Refresh layer structure while preserving rarity weights
+  async refreshLayerStructure() {
+    try {
+      this.showStatus('Refreshing layer structure...');
+      
+      // Store current rarity weights by layer ID
+      const savedRarities = this.extractRarityWeights();
+      
+      // Reload the layer structure data (without rendering UI)
+      await this.loadLayerStructureData();
+      
+      // Restore rarity weights before rendering UI
+      this.restoreRarityWeights(savedRarities);
+      
+      // Now render the UI with restored values
+      this.renderLayerTree();
+      
+      this.showStatus('Layer structure refreshed successfully');
+    } catch (error) {
+      console.error('Error refreshing layers:', error);
+      this.showStatus('Error refreshing layers: ' + error.message, 'error');
+    }
+  },
+
+  // Extract current rarity weights from layer structure
+  extractRarityWeights() {
+    const rarities = new Map();
+    
+    const extractFromGroup = (group) => {
+      if (group.children) {
+        group.children.forEach(child => {
+          if (child.type === 'layer' && child.rarity) {
+            rarities.set(child.id, child.rarity);
+          } else if (child.type === 'group') {
+            extractFromGroup(child);
+          }
+        });
+      }
+    };
+    
+    this.layerGroups.forEach(group => {
+      if (group.selected !== undefined) {
+        rarities.set(`group_${group.id}_selected`, group.selected);
+      }
+      if (group.expanded !== undefined) {
+        rarities.set(`group_${group.id}_expanded`, group.expanded);
+      }
+      extractFromGroup(group);
+    });
+    
+    return rarities;
+  },
+
+  // Restore rarity weights to refreshed layer structure
+  restoreRarityWeights(savedRarities) {
+    const restoreInGroup = (group) => {
+      // Restore group selection and expansion state
+      const selectedKey = `group_${group.id}_selected`;
+      const expandedKey = `group_${group.id}_expanded`;
+      
+      if (savedRarities.has(selectedKey)) {
+        group.selected = savedRarities.get(selectedKey);
+      }
+      if (savedRarities.has(expandedKey)) {
+        group.expanded = savedRarities.get(expandedKey);
+      }
+      
+      if (group.children) {
+        group.children.forEach(child => {
+          if (child.type === 'layer') {
+            // Restore rarity weight if it exists, otherwise keep default of 1.0
+            if (savedRarities.has(child.id)) {
+              child.rarity = savedRarities.get(child.id);
+            }
+          } else if (child.type === 'group') {
+            restoreInGroup(child);
+          }
+        });
+      }
+    };
+    
+    this.layerGroups.forEach(restoreInGroup);
+  },
+
   // Load layer structure from the active document
   async loadLayerStructure() {
+      try {
+          await this.loadLayerStructureData();
+          this.renderLayerTree();
+      } catch (error) {
+          console.error('Error in loadLayerStructure:', error);
+          throw error;
+      }
+  },
+
+  // Load layer data without rendering UI (for refresh functionality)
+  async loadLayerStructureData() {
       try {
           // Get Photoshop and the active document
           const photoshop = require('photoshop');
@@ -95,11 +192,8 @@ const app = {
 
           // Process all layers recursively
           this.layerGroups = await this.processLayers(doc.layers);
-
-          // Render the layer tree
-          this.renderLayerTree();
       } catch (error) {
-          console.error('Error in loadLayerStructure:', error);
+          console.error('Error in loadLayerStructureData:', error);
           throw error;
       }
   },
